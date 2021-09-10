@@ -1,5 +1,7 @@
+// Require
 const express = require("express");
 const bodyParser = require("body-parser");
+const date = require(__dirname + "/date.js")
 
 const app = express();
 
@@ -11,39 +13,37 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
 
-// *          ------ HOME  "/" ------         *
+console.log("My print:", date.getDate(), date.getDay())
+// *          ------ HOME route  "/" ------         *
+// GET
 app.get("/", function(req, res){
-  let today = new Date();
-  let options = {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
-    };
-  let day = today.toLocaleDateString("en-US", options);
-
+  let day = date()
   res.render("list", {listTitle: day, newItems: items});
 });
-
-
+// POST
 app.post("/", function(req, res) {
   if (req.body.list === "Work List"){
     workItems.push(req.body.addItem);
-    res.redirect("/work")
+    res.redirect("/work");
   } else {
   items.push(req.body.addItem);
-  res.redirect("/")
+  res.redirect("/");
   }
 });
 
-// *          ------ /WORK    ------         *
+// *          ------ '/Work' route    ------         *
+// get work
 app.get("/work", function(req, res){
   res.render("list", {listTitle: "Work List", newItems: workItems});
 });
 
+// *          ------ '/About' route    ------         *
+// get about
 app.get("/about", function(req, res){
   res.render("about");
 });
 
+// **** LISTEN *****
 app.listen(3000, function(){
-  console.log("Server started on port 3000")
+  console.log("Server started on port 3000");
 });
